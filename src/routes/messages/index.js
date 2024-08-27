@@ -87,7 +87,7 @@ MainMessageRouter.route("/:messageID/channels/:channelId").patch(
   rateLimit({name: 'message_update', expire: 60, requestsLimit: 120 }),
   channelVerification,
   disAllowBlockedUser,
-  fileMessage,
+  // fileMessage,
   sendMessage,
   URLEmbed
 );
@@ -102,7 +102,7 @@ MainMessageRouter.route("/channels/:channelId").post(
   disAllowBlockedUser,
   serverChannelPermissions('send_message', true),
   checkRolePerms('Send Message', permissions.roles.SEND_MESSAGES),
-  fileMessage,
+  // fileMessage,
   sendMessage,
   URLEmbed,
   //GDriveOauthClient,
