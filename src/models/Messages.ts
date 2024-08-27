@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import {Schema, Document, model} from 'mongoose'
 import flake from '../utils/genFlakeId'
 import { MessageQuote } from './MessageQuotes'

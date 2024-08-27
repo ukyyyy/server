@@ -148,9 +148,9 @@ module.exports = async (req, res, next) => {
     {
       $addFields: {
         reacted: {
-           $in: [mongoose.Types.ObjectId(req.user._id), '$reactedBy'] // it works now
+           $in: [new mongoose.Types.ObjectId(req.user._id), '$reactedBy'] // it works now
          }
-      }  
+      }
     },
     {
       $project: {
@@ -168,7 +168,7 @@ module.exports = async (req, res, next) => {
 
   if (allReactions.length) {
     messages = messages.map(message => {
-    const reactions = [] 
+    const reactions = []
     allReactions.forEach(reaction => {
         if (reaction.messageID !== message.messageID) return;
         reactions.push({...reaction, messageID: undefined})

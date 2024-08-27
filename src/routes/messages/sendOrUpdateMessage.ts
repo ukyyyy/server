@@ -62,21 +62,21 @@ if ((!message || !message.trim()) && (!req.uploadFile && !htmlEmbed)) {
         return;
       }
       if (!button.id) {
-        res.status(403).send({message: "Button must contain an id"})  
+        res.status(403).send({message: "Button must contain an id"})
         return;
       }
       if (!button.name || !button.name.trim()) {
-        res.status(403).send({message: "Button must contain a name"})  
+        res.status(403).send({message: "Button must contain a name"})
         return;
       }
      if (button.name.trim().length > 40) {
-      res.status(403).send({message: "Button name must be less than 40 characters."})  
+      res.status(403).send({message: "Button name must be less than 40 characters."})
       return;
-     } 
+     }
      if (button.id.length >= 40) {
-      res.status(403).send({message: "button id must be less than 40 characters."})  
+      res.status(403).send({message: "button id must be less than 40 characters."})
       return;
-     } 
+     }
       newButtons.push({name: button.name.trim(), id: button.id});
     }
     buttons = newButtons;
@@ -85,7 +85,7 @@ if ((!message || !message.trim()) && (!req.uploadFile && !htmlEmbed)) {
   let jsonToBase64HtmlEmbed: string | undefined = undefined;
   if (htmlEmbed) {
     if (typeof htmlEmbed !== "object") {
-      return res.status(403).send({message: "invalid htmlEmbed type."}) 
+      return res.status(403).send({message: "invalid htmlEmbed type."})
     }
     if (JSON.stringify(htmlEmbed).length > 5000) {
       return res.status(403).send({message: "Json length must be less than 5000"});
@@ -118,9 +118,9 @@ if ((!message || !message.trim()) && (!req.uploadFile && !htmlEmbed)) {
   let mentions: any[] = [];
   if (mentionIds.length) {
     mentions = await Users.find({id: {$in: mentionIds}}).select('_id id avatar tag username').lean();
-  } 
+  }
   const _idMentionsArr = mentions.map((m:any)=> m._id )
-  
+
   // converted to a Set to remove duplicates.
   const messageIds: string[] = Array.from(new Set(matchAll(message, /<m([\d]+)>/g).toArray()));
 
@@ -153,7 +153,7 @@ if ((!message || !message.trim()) && (!req.uploadFile && !htmlEmbed)) {
 
 
 
-    
+
     const quoteInsertPayload = quotedMessages.map(q => {
       return {...q, creator: q.creator._id, quotedChannel: req.channel._id}
     })
@@ -164,8 +164,8 @@ if ((!message || !message.trim()) && (!req.uploadFile && !htmlEmbed)) {
     for (let index = 0; index < quotedMessages.length; index++) {
       const quotedMessage = quotedMessages[index] as Message;
       if (!quotedMessage.quotes) continue
-      
-      const nestedArr= filterNestedQuotes (quotedMessage?.message, quotedMessage.quotes);
+
+      const nestedArr= filterNestedQuotes(quotedMessage?.message, quotedMessage.quotes as any[]);
       quoteObjectIds = [...quoteObjectIds, ...nestedArr.map((q: any) => q._id)]
       quotedMessages = [...quotedMessages, ...nestedArr];
       if (!quotedMessages[index].quotes) continue;
@@ -267,7 +267,7 @@ if ((!message || !message.trim()) && (!req.uploadFile && !htmlEmbed)) {
     directMessage(req, io, channelId, messageCreated, socketID, tempID);
   }
   next();
-  
+
 
 };
 
@@ -282,7 +282,7 @@ async function serverMessage(req: any, io: SocketIO.Server, channelId: any, mess
     })
   })
 
-  
+
 
   const date = Date.now();
   await Channels.updateOne({ channelId }, { $set: {
@@ -309,7 +309,7 @@ async function serverMessage(req: any, io: SocketIO.Server, channelId: any, mess
     message: messageCreated,
     channel: req.channel,
     server_id: req.channel.server.server_id
-  })  
+  })
 
 }
 
@@ -381,7 +381,7 @@ async function directMessage(req: any, io: SocketIO.Server, channelId: any, mess
       sender: req.user,
       message: messageCreated,
       recipient: req.channel.recipients[0],
-    })  
+    })
 
 }
 

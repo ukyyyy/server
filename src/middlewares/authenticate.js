@@ -131,8 +131,7 @@ async function checkIPChangeAndIsBanned(req, res) {
 function addIPToDB(req) {
   Users.updateOne(
     { _id: req.session.user._id },
-    { ip: req.userIP },
-    (err, doc) => { }
+    { ip: req.userIP }
   );
 
   // UsersIPs.updateOne(

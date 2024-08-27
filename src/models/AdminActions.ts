@@ -25,7 +25,7 @@ const schema = new Schema<AdminAction>({
   user: { type: Schema.Types.ObjectId, ref: 'users'},
   date: Number,
   expireAt: {
-    type: Date,
+    type: Number,
     default: Date.now,
     index: {expires: 398999 } // 4.6 days
   },

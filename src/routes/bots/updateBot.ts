@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Request, Response } from "express";
 import {Users} from '../../models/Users';
 import { matchedData } from "express-validator";
@@ -17,7 +19,7 @@ export default async function updateBot(req: Request, res: Response) {
   }
   const data = matchedData(req);
 
-   // check if tag + username already exists 
+   // check if tag + username already exists
    if (data.username || data.tag) {
     const userTagExists = await Users.exists({
       username: data.username || (bot as any).username,
@@ -47,7 +49,7 @@ export default async function updateBot(req: Request, res: Response) {
     return;
   }
   data.id = (bot as any).id;
-  
+
   req.io.in((bot as any).id).emit(USER_UPDATED, data);
   emitToAll(USER_UPDATED, bot._id, data, req.io, false);
   res.json(data);
@@ -59,7 +61,7 @@ async function uploadAvatar(base64: string, user_id: string) {
     let buffer: Buffer | undefined = Buffer.from(base64.split(',')[1], 'base64');
 
     // 8092000 = 8mb
-    const maxSize = 8092000; 
+    const maxSize = 8092000;
     if (buffer.byteLength > maxSize) {
       return reject("Image is larger than 8MB.")
 

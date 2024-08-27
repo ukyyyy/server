@@ -1,17 +1,18 @@
+// @ts-nocheck
 
-import busboy from 'connect-busboy';
-import path from 'path';
-import fs from 'fs';
-import * as nertiviaCDN from '../../utils/uploadCDN/nertiviaCDN';
-import uploadGoogleDrive from '../../utils/uploadCDN/googleDrive';
-import sharp from 'sharp';
-import gm from 'gm';
+import busboy from "connect-busboy";
+import path from "path";
+import fs from "fs";
+import * as nertiviaCDN from "../../utils/uploadCDN/nertiviaCDN";
+import uploadGoogleDrive from "../../utils/uploadCDN/googleDrive";
+import sharp from "sharp";
+import gm from "gm";
+import { NextFunction, Request, Response } from "express";
+import compressImage from "../../utils/compressImage";
+import tempSaveImage from "../../utils/tempSaveImage";
+
 const gmInstance = gm.subClass({ imageMagick: true });
-import { Request, Response, NextFunction } from 'express';
 const oauth2Client = require('../../middlewares/GDriveOauthClient')
-import flake from '../../utils/genFlakeId'
-import compressImage from '../../utils/compressImage';
-import tempSaveImage from '../../utils/tempSaveImage';
 
 export default async (req: Request, res: Response, next: NextFunction) => {
   let cancelRequest = false;

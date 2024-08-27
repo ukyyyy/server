@@ -1,6 +1,6 @@
 import { Message } from '../../models/Messages';
 import { NextFunction, Request, Response } from "express";
-import { Document, FilterQuery, LeanDocument } from "mongoose";
+import { Document, FilterQuery } from "mongoose";
 import { Messages } from "../../models/Messages";
 import { MESSAGE_DELETED_BULK } from '../../ServerEventNames';
 
@@ -66,6 +66,6 @@ async function findMessages(filter: FilterQuery<Message>) {
   return messagesToIds(await Messages.find(filter, {_id: 0}).limit(200).select("messageID").lean());
 }
 
-function messagesToIds(messages: LeanDocument<Message & Document<any, any>>[]) {
+function messagesToIds(messages: (Message & Document<any, any>)[]) {
   return messages.map((message) => message.messageID)
 }

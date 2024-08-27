@@ -8,7 +8,7 @@ export interface BannedIP {
 const schema = new Schema<BannedIP>({
   ip: {type: String, unique: true},
   expireAt: {
-    type: Date,
+    type: Number,
     default: Date.now,
     index: {expires: 398999 } // 4.6 days
   },

@@ -42,7 +42,7 @@ module.exports = async (req:RequestCustom, res: Response, next: NextFunction) =>
   let resObj: any = {}
   const OGTagResult = await getOGTags(url)
   if (!OGTagResult.ok) return;
-  // if url is an image 
+  // if url is an image
   if (OGTagResult.type === "img") {
     try {
       const meta = await getImageMetadata(url);
@@ -85,7 +85,7 @@ module.exports = async (req:RequestCustom, res: Response, next: NextFunction) =>
   const io:any = req.io;
 
   const emitData = {
-    embed: resObj, 
+    embed: resObj,
     channelId: req.channel.channelId,
     messageID: message_id
   }
@@ -130,7 +130,7 @@ function getOGTags(url: string) {
   })
 }
 
-function getTenorTags(embed: Embed, parseHTML: CheerioStatic, resolve: any) {
+function getTenorTags(embed: Embed, parseHTML: any, resolve: any) {
   addIfExists(embed, "url", parseHTML('meta[property="og:video"]').attr('content'))
   addIfExists(embed, "width", parseHTML('meta[property="og:video:width"]').attr('content'))
   addIfExists(embed, "height", parseHTML('meta[property="og:video:height"]').attr('content'))
@@ -153,9 +153,8 @@ function addIfExists(embed: Embed, key:keyof Embed , value?:string) {
 function getImageMetadata(url: string) {
   return new Promise<sharp.Metadata> ((resolve, reject) => {
     const controller = new AbortController();
-    const { signal } = controller;
 
-    fetch(url, { signal })
+    fetch(url, { signal: controller.signal as NonNullable<RequestInit['signal']> })
       .then(res => {
         if(!res.ok) {
           controller.abort()

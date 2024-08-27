@@ -20,7 +20,7 @@ function main() {
 	}
 	if (cluster.isMaster) {
 		console.log("Master PID: ", process.pid);
-	
+
 		for (let i = 0; i < numCPUs; i++) {
 			cluster.fork();
 		}
@@ -37,27 +37,28 @@ function start() {
 
 	let isListening = false;
 
-	connectMongoDB();
-	
-	function connectMongoDB() {
+	connectMongoDB().then(() => {});
+	connectRedis();
+
+	async function connectMongoDB() {
 		Log.info("Connecting to MongoDB...")
-		const mongoOptions: mongoose.ConnectionOptions = {
-			useNewUrlParser: true,
-			useUnifiedTopology: true,
-			useFindAndModify: false,
-			useCreateIndex: true
-		};
-		mongoose.connect(process.env.MONGODB_ADDRESS, mongoOptions, async err => {
-			if (err) throw err;
-			Log.info("Connected!")
-
-
-			// const today = 1664697600000;
-			// await Users.updateMany({created: {$gt: today}}, {$set: {banned: true}});
-			// console.log("done")
-
-			// connectRedis();
-		})
+		try {
+			await mongoose.connect(process.env.MONGODB_ADDRESS);
+			console.log('Connected!');
+		} catch (err) {
+			throw err;
+		}
+		// mongoose.connect(process.env.MONGODB_ADDRESS, mongoOptions, async err => {
+		// 	if (err) throw err;
+		// 	Log.info("Connected!")
+		//
+		//
+		// 	// const today = 1664697600000;
+		// 	// await Users.updateMany({created: {$gt: today}}, {$set: {banned: true}});
+		// 	// console.log("done")
+		//
+		// 	// connectRedis();
+		// })
 	}
 	function connectRedis() {
 		Log.info("Connecting to Redis...")
