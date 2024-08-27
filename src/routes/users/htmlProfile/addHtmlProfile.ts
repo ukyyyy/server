@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express-serve-static-core";
 
-import {checkHTML} from 'html-safe-checker'
+import {htmlToJson} from 'html-safe-checker'
 import {Users} from "../../../models/Users";
 import { zip } from "../../../utils/zip";
 
@@ -18,7 +18,7 @@ export const addHtmlProfile = async (req: Request, res: Response, next: NextFunc
   }
   let jsonHtml: any;
   try {
-    jsonHtml = checkHTML(html);
+    jsonHtml = htmlToJson(html);
   } catch(err: any) {
     return res.status(403).json({error: err.message})
   }
