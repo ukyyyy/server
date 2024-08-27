@@ -31,11 +31,15 @@ export default async (req: Request, res: Response, next: NextFunction) => {
       return res.status(403).json({ message: "Message is not created by you." });
   }
 
+  // if (req.uploadFile) {
+  //   message = req.uploadFile.message;
+  // }
+
   if (req.uploadFile) {
-    message = req.uploadFile.message;
+    return res.status(502).send({message: 'Files are unsupported for now. Please send your message again without the file.'});
   }
 
-if ((!message || !message.trim()) && (!req.uploadFile && !htmlEmbed)) {
+if ((!message || !message.trim()) && !htmlEmbed) {
   res.status(403).send({message: "Cant send empty message."})
   return;
 }
@@ -184,9 +188,9 @@ if ((!message || !message.trim()) && (!req.uploadFile && !htmlEmbed)) {
     mentions: _idMentionsArr,
     quotes: quoteObjectIds
   }
-  if (req.uploadFile && req.uploadFile.file) {
-    query.files = [req.uploadFile.file]
-  }
+  // if (req.uploadFile && req.uploadFile.file) {
+  //   query.files = [req.uploadFile.file]
+  // }
   if (buttons && buttons.length) {
     query.buttons = buttons;
   }
@@ -200,9 +204,9 @@ if ((!message || !message.trim()) && (!req.uploadFile && !htmlEmbed)) {
     query.messageID = messageID
     query.created = messageDoc?.created
     query.timeEdited = Date.now()
-    if (!req.uploadFile && messageDoc?.files) {
-      query.files = messageDoc?.files;
-    }
+    // if (!req.uploadFile && messageDoc?.files) {
+    //   query.files = messageDoc?.files;
+    // }
     await Messages.replaceOne({messageID}, query);
   } else {
     const messageCreate = new Messages(query)
@@ -231,11 +235,11 @@ if ((!message || !message.trim()) && (!req.uploadFile && !htmlEmbed)) {
   if (query.timeEdited) {
     messageCreated.timeEdited = query.timeEdited
   }
-  if (req.uploadFile && req.uploadFile.file) {
-    messageCreated.files = [req.uploadFile.file]
-  } else if (messageID && messageDoc?.files) {
-    messageCreated.files = messageDoc?.files
-  }
+  // if (req.uploadFile && req.uploadFile.file) {
+  //   messageCreated.files = [req.uploadFile.file]
+  // } else if (messageID && messageDoc?.files) {
+  //   messageCreated.files = messageDoc?.files
+  // }
   if (buttons && buttons.length) {
     messageCreated.buttons = buttons;
   }
