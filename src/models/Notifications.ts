@@ -1,26 +1,24 @@
-import {model, Schema} from 'mongoose';
+import { model, Schema } from 'mongoose';
 
 interface Notification {
-  recipient: string
-  type: string
-  mentioned: boolean
-  channelId: string
-  lastMessageID: string
-  sender: any
-  count: number
+  recipient: string;
+  type: string;
+  mentioned?: boolean;  // made optional
+  channelId?: string;   // made optional
+  lastMessageID?: string; // made optional
+  sender?: any;         // consider defining a specific type for sender
+  count?: number;       // made optional
 }
 
-
-// type MESSAGE_CREATED
+// Notification schema
 const schema = new Schema<Notification>({
   recipient: { type: String, required: true },
   type: { type: String, required: true },
-  mentioned: {type: Boolean},
-  channelId: { type: String, required: false },
-  lastMessageID: {type: String, required: false },
-  sender: { type: Schema.Types.ObjectId, ref: 'users', required: false},
-  count: {type: Number, required: false }
-})
-
+  mentioned: { type: Boolean, default: false }, // default value
+  channelId: { type: String },
+  lastMessageID: { type: String },
+  sender: { type: Schema.Types.ObjectId, ref: 'users' },
+  count: { type: Number, default: 0 }, // default value
+});
 
 export const Notifications = model<Notification>('notifications', schema);
