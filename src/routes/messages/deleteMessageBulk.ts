@@ -4,7 +4,6 @@ import { Document, FilterQuery } from "mongoose";
 import { Messages } from "../../models/Messages";
 import { MESSAGE_DELETED_BULK } from '../../ServerEventNames';
 
-
 module.exports = async (req: Request, res: Response, next: NextFunction) => {
   const { channelId } = req.params;
   const { ids } = req.body;
@@ -41,15 +40,18 @@ module.exports = async (req: Request, res: Response, next: NextFunction) => {
     });
   }
 
-  await Messages.deleteMany({messageID: { $in: messageIds}})
+  if (!messageIds || messageIds.length === 0) {
+    return res.status(404).json({ message: "No messages found to delete." });
+  }
+
+  await Messages.deleteMany({messageID: { $in: messageIds }});
 
   const response = {
     channelId: channelId,
     messageIds,
-  }
+  };
 
-
-  res.json(response)
+  res.json(response);
 
   if (!messageIds.length) return;
 
@@ -63,9 +65,9 @@ module.exports = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 async function findMessages(filter: FilterQuery<Message>) {
-  return messagesToIds(await Messages.find(filter, {_id: 0}).limit(200).select("messageID").lean());
+  return messagesToIds(await Messages.find(filter, {_id: 0}).limit(200).select("messageID").lean() as { messageID: string }[]);
 }
 
-function messagesToIds(messages: (Message & Document<any, any>)[]) {
-  return messages.map((message) => message.messageID)
+function messagesToIds(messages: { messageID: string }[]) {
+  return messages.map((message) => message.messageID);
 }
