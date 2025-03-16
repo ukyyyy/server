@@ -55,9 +55,11 @@ export default async function deleteServer(io: any, server_id: string, server: a
     await ServerInvites.deleteMany({ server: server._id });
     await ServerRoles.deleteMany({ server: server._id });
 
-    await Users.updateMany({ $pullAll: { servers: [server._id] } });
-    // res.json({ status: "Done!" });
-    callback(null, true);
+    await Users.updateMany(
+  { _id: { $in: [server._id] } }, // Filter: Alle User, die das Server-ID in ihren 'servers'-Array haben
+  { $pullAll: { servers: [server._id] } } // Update-Operation: Entfernen des server._id aus dem 'servers'-Array
+);
+
 
     //EMIT leave event
 
